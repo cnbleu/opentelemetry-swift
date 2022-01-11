@@ -16,8 +16,8 @@ Pod::Spec.new do |spec|
   #
 
   spec.name             = "OpenTelemetryApi"
-  spec.version          = '0.0.6'
-  spec.summary          = 'aliyun log service ios producer.'
+  spec.version          = '0.0.7'
+  spec.summary          = 'OpenTelemetryApi Objc wrapper'
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -30,11 +30,10 @@ Pod::Spec.new do |spec|
   https://help.aliyun.com/product/28958.html
                          DESC
 
-  spec.homepage         = 'https://github.com/aliyun/aliyun-log-ios-sdk'
+  spec.homepage         = 'https://github.com/cnbleu/opentelemetry-swift'
   spec.license          = { :type => 'MIT', :file => 'LICENSE' }
-  spec.author           = { "yulong.gyl" => "yulong.gyl@alibaba-inc.com" }
+  spec.author           = { "cnbleu" => "keyu404@gmail.com" }
   spec.source           = { :git => 'https://github.com/cnbleu/opentelemetry-swift.git', :tag => spec.version.to_s }
-  spec.social_media_url = 'http://t.cn/AiRpol8C'
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
   
   spec.ios.deployment_target = '10.0'
@@ -44,5 +43,14 @@ Pod::Spec.new do |spec|
   spec.requires_arc  = true
   spec.libraries = 'z'
   spec.source_files = 'Sources/OpenTelemetryApi/**/*.{swift}'
+
+  spec.pod_target_xcconfig = {
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64',
+    'DEFINES_MODULE' => 'YES',
+    'OTHER_LDFLAGS' => '-ObjC'
+  }
+  spec.user_target_xcconfig = {
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+  }
 
 end
