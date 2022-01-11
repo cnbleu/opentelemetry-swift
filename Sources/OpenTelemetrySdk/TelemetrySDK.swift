@@ -7,7 +7,7 @@
 
 import Foundation
 import OpenTelemetryApi
-import os.activity
+//import os.activity
 
 @objc
 @objcMembers
@@ -20,10 +20,10 @@ public class TelemetrySDK : NSObject {
     private override init() {
     }
     
-    @objc
-    public var activityIdent: os_activity_id_t {
-        return OpenTelemetrySDK.instance.contextProvider.getActivityIdent()
-    }
+//    @objc
+//    public var activityIdent: os_activity_id_t {
+//        return OpenTelemetrySDK.instance.contextProvider.getActivityIdent()
+//    }
     
     @objc
     public func getTracer(_ instrumentationName: String) -> TelemetryTracer {
