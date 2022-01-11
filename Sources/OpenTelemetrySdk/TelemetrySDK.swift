@@ -27,20 +27,27 @@ public class TelemetrySDK : NSObject {
     
     @objc
     public func getTracer(_ instrumentationName: String) -> TelemetryTracer {
-        let resource: Resource = OpenTelemetrySDK.instance.tracerProvider.getActiveResource();
-        let newResource: Resource = Resource.init(attributes: [
-            ResourceAttributes.serviceName.rawValue: AttributeValue.string("iOS"),
-            ResourceAttributes.telemetrySdkLanguage.rawValue: AttributeValue.string("Swift"),
-            ResourceAttributes.hostName.rawValue: AttributeValue.string("iOS")
-        ])
-        OpenTelemetrySDK.instance.tracerProvider.updateActiveResource(resource.merging(other: newResource))
-        
-        return TelemetryTracer(tracer: OpenTelemetrySDK.instance.tracerProvider.get(instrumentationName: instrumentationName))
+        return getTracer(instrumentationName, "")
+    }
+
+    @objc
+    public func getTracer(_ instrumentationName: String, _ instrumentationVersion: String) -> TelemetryTracer {
+        return TelemetryTracer(tracer: OpenTelemetrySDK.instance.tracerProvider.get(instrumentationName: instrumentationName, instrumentationVersion: instrumentationVersion))
     }
     
     @objc
     public func addSpanProcessor(_ spanExporter: TelemetrySpanExporter) {
         OpenTelemetrySDK.instance.tracerProvider.addSpanProcessor(SimpleSpanProcessor(spanExporter: BridgeSpanExporter(exporter: spanExporter)))
+    }
+
+    @objc
+    public func updateActiveResource(_ resource: TelemetryResource) {
+        OpenTelemetrySDK.instance.tracerProvider.updateActiveResource(resource.resource)
+    }
+
+    @objc
+    public func activeResource() -> TelemetryResource {
+        return TelemetryResource.init(resource: OpenTelemetrySDK.instance.tracerProvider.getActiveResource())
     }
     
     @objc
@@ -601,7 +608,7 @@ public class TelemetryEvent: NSObject {
 @objc
 @objcMembers
 public class TelemetryResource: NSObject {
-    private var resource: Resource;
+    fileprivate var resource: Resource;
     
     public var attributes: [String: TelemetryAttributeValue] {
         var attr: [String: TelemetryAttributeValue] = [String: TelemetryAttributeValue]()
