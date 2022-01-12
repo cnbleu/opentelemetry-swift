@@ -697,7 +697,7 @@ public class TelemetryTextMapPropagator: NSObject {
     }
     
     @objc
-    public func inject(_ context: TelemetrySpanContext, _ carrier: NSMutableDictionary, _ setter: TelemetrySetter) {
+    public func inject(context: TelemetrySpanContext, carrier: NSMutableDictionary, setter: TelemetrySetter) {
         var carrierLocal = [String: String]()
         textMapPropagator.inject(spanContext: context.spanContext, carrier: &carrierLocal, setter: BridgeTelemetrySetter(setter: setter, carrier: carrier))
     }
