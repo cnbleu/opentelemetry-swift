@@ -696,9 +696,10 @@ public class TelemetryTextMapPropagator: NSObject {
         self.textMapPropagator = textMapPropagator
     }
     
-    public func inject(_ context: TelemetrySpanContext, _ carrier: inout NSMutableDictionary, _ setter: TelemetrySetter) {
+    @objc
+    public func inject(_ context: TelemetrySpanContext, _ carrier: NSMutableDictionary, _ setter: TelemetrySetter) {
         var carrierLocal = [String: String]()
-        textMapPropagator.inject(spanContext: context.spanContext, carrier: &carrierLocal, setter: BridgeTelemetrySetter(setter: setter, carrier: &carrier))
+        textMapPropagator.inject(spanContext: context.spanContext, carrier: &carrierLocal, setter: BridgeTelemetrySetter(setter: setter, carrier: carrier))
     }
 }
 
@@ -712,7 +713,7 @@ public class BridgeTelemetrySetter: NSObject, Setter {
     private var setter: TelemetrySetter
     private var bridgeCarrier: NSMutableDictionary
     
-    public init(setter: TelemetrySetter, carrier: inout NSMutableDictionary) {
+    public init(setter: TelemetrySetter, carrier: NSMutableDictionary) {
         self.setter = setter
         self.bridgeCarrier = carrier
     }
