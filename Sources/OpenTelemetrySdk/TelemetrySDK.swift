@@ -81,6 +81,11 @@ public class TelemetrySDK : NSObject {
     }
     
     @objc
+    public func activeTextMapPropagator() -> TelemetryTextMapPropagator {
+        return TelemetryTextMapPropagator(textMapPropagator: OpenTelemetrySDK.instance.propagators.textMapPropagator)
+    }
+    
+    @objc
     public func test(tst: String) {
         print("test" + tst)
     }
@@ -257,7 +262,7 @@ public class TelemetrySpan: NSObject {
 @objc
 @objcMembers
 public class TelemetrySpanContext: NSObject {
-    private var spanContext: SpanContext
+    fileprivate var spanContext: SpanContext
     
     fileprivate init(spanContext: SpanContext) {
         self.spanContext = spanContext
@@ -679,6 +684,41 @@ public class TelemetrySpanExporterResultCode: NSObject {
         } else {
             self.init(resultCode: .failure)
         }
+    }
+}
+
+@objc
+@objcMembers
+public class TelemetryTextMapPropagator: NSObject {
+    fileprivate var textMapPropagator: TextMapPropagator
+    
+    public init(textMapPropagator: TextMapPropagator) {
+        self.textMapPropagator = textMapPropagator
+    }
+    
+    public func inject(_ context: TelemetrySpanContext, _ carrier: inout NSMutableDictionary, _ setter: TelemetrySetter) {
+        var carrierLocal = [String: String]()
+        textMapPropagator.inject(spanContext: context.spanContext, carrier: &carrierLocal, setter: BridgeTelemetrySetter(setter: setter, carrier: &carrier))
+    }
+}
+
+@objc(TelemetrySetter)
+public protocol TelemetrySetter: NSObjectProtocol {
+    
+    func set(_ dict: NSMutableDictionary, _ key: String, _ value: String)
+}
+
+public class BridgeTelemetrySetter: NSObject, Setter {
+    private var setter: TelemetrySetter
+    private var bridgeCarrier: NSMutableDictionary
+    
+    public init(setter: TelemetrySetter, carrier: inout NSMutableDictionary) {
+        self.setter = setter
+        self.bridgeCarrier = carrier
+    }
+    
+    public func set(carrier: inout [String : String], key: String, value: String) {
+        bridgeCarrier.setObject(value, forKey: key as NSCopying)
     }
 }
 
