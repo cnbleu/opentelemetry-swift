@@ -719,7 +719,7 @@ public class BridgeTelemetrySetter: NSObject, Setter {
     }
     
     public func set(carrier: inout [String : String], key: String, value: String) {
-        bridgeCarrier.setObject(value, forKey: key as NSCopying)
+        self.setter.set(bridgeCarrier, key, value)
     }
 }
 
