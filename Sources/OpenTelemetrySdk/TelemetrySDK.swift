@@ -218,6 +218,11 @@ public class TelemetrySpan: NSObject {
         return TelemetryStatus(span.status)
     }
     
+    @objc
+    public func setStatus(status: TelemetryStatus) {
+        span.status = status.status;
+    }
+    
     public var name: String {
         return span.name
     }
@@ -391,7 +396,7 @@ public class TelemetrySpanKind: NSObject {
 @objc
 @objcMembers
 public class TelemetryStatus: NSObject {
-    private var status: Status
+    fileprivate var status: Status
     public var name: String
     
     public static var OK: TelemetryStatus {
